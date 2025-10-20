@@ -29,6 +29,7 @@ root.render(<App />);`
   });
 
   const handleSandpackChange = (newFiles) => {
+    console.log("Files changed:", newFiles);
     setFiles(prev => ({
       ...prev,
       content: newFiles
@@ -70,7 +71,7 @@ root.render(<App />);`
               <span className="project-id">ID: {projectId.slice(-8)}</span>
             </div>
           </div>
-          <Editor />
+          <Editor onFilesChange={handleSandpackChange} />
         </div>
       </div>
     </SandpackProvider>
