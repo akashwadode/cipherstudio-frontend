@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { SandpackProvider } from "@codesandbox/sandpack-react";
 import Editor from "./components/Editor";
-import FileManager from "./components/FileManager";
+import FileExplorer from "./components/FileExplorer";
 import { saveProject, loadProject, generateId } from "./services/api";
+import "./components/App.css";
 
 function App() {
   const [files, setFiles] = useState({
@@ -17,62 +19,61 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);`
     }
   });
-  const [projectId, setProjectId] = useState(generateId());
 
-  // 🔥 FIXED: Force Sandpack to switch by changing files object
-  const handleFileChange = (file) => {
-    setFiles(prev => ({
-      active: file,
-      content: { ...prev.content }  // ← NEW OBJECT = Sandpack switches!
-    }));
-  };
+  const [projectId, setProjectId] = useState(() => {
+    const savedId = localStorage.getItem("currentProjectId");
+    if (savedId) return savedId;
+    const newId = generateId();
+    localStorage.setItem("currentProjectId", newId);
+    return newId;
+  });
 
-  // 🔥 FIXED: Capture edits from Sandpack
-  const handleSandpackChange = (files) => {
+  const handleSandpackChange = (newFiles) => {
     setFiles(prev => ({
-      active: prev.active,
-      content: files
+      ...prev,
+      content: newFiles
     }));
   };
 
   const handleSave = () => {
+    localStorage.setItem("currentProjectId", projectId);
     const result = saveProject(projectId, files.content);
     alert(`✅ Saved as: ${result.projectId}`);
   };
 
   const handleLoad = () => {
-    const loaded = loadProject(projectId);
-    if (loaded) {
-      setFiles({ active: "/App.js", content: loaded });
-      alert("✅ Loaded project!");
-    } else {
-      alert("❌ No project found!");
-    }
+    const keys = Object.keys(localStorage).filter(k => k.startsWith("project_"));
+    if (keys.length === 0) return alert("❌ No project found!");
+    const firstProjectId = keys[0].replace("project_", "");
+    const loaded = loadProject(firstProjectId);
+    setProjectId(firstProjectId);
+    setFiles({ active: Object.keys(loaded)[0], content: loaded });
+    alert(`✅ Loaded project ID: ${firstProjectId}`);
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "Arial" }}>
-      <FileManager files={files} onFileChange={handleFileChange} />
-      <div style={{ flex: 1, padding: "20px" }}>
-        <div style={{ marginBottom: "20px" }}>
-          <h1 style={{ margin: "0 0 10px 0" }}>🧩 CipherStudio</h1>
-          <div>
-            <button onClick={handleSave} style={{ marginRight: "10px" }}>
-              💾 Save Project
-            </button>
-            <button onClick={handleLoad}>📂 Load Project</button>
-            <span style={{ marginLeft: "20px", color: "#666" }}>
-              ID: {projectId}
-            </span>
+    <SandpackProvider
+      template="react"
+      files={files.content}
+      activeFile={files.active}
+      customSetup={{ entry: "/index.js" }}
+      onChange={handleSandpackChange}
+    >
+      <div className="app-container">
+        <FileExplorer />
+        <div className="main-content">
+          <div className="topbar">
+            <h1>🧩 CipherStudio</h1>
+            <div className="controls">
+              <button onClick={handleSave}>💾 Save</button>
+              <button onClick={handleLoad}>📂 Load</button>
+              <span className="project-id">ID: {projectId.slice(-8)}</span>
+            </div>
           </div>
+          <Editor />
         </div>
-        <Editor 
-          files={files.content} 
-          activeFile={files.active}
-          onFilesChange={handleSandpackChange}  // ← NEW!
-        />
       </div>
-    </div>
+    </SandpackProvider>
   );
 }
 

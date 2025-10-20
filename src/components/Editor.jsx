@@ -1,15 +1,12 @@
-import { Sandpack } from "@codesandbox/sandpack-react";
+import { SandpackLayout, SandpackCodeEditor, SandpackPreview } from "@codesandbox/sandpack-react";
 
-export default function Editor({ files, activeFile, onFilesChange }) {
+export default function Editor() {
   return (
-    <div style={{ height: "80vh", width: "100%" }}>
-      <Sandpack
-        template="react"
-        theme="dark"
-        files={files}
-        activeFile={activeFile}
-        onFilesChange={onFilesChange}  // ← NEW! Captures edits
-      />
+    <div className="editor-container">
+      <SandpackLayout className="sandpack-layout">
+        <SandpackCodeEditor showLineNumbers showInlineErrors />
+        <SandpackPreview />
+      </SandpackLayout>
     </div>
   );
 }
