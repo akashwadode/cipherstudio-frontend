@@ -11,7 +11,7 @@ function App() {
     active: "/App.js",
     content: {
       "/App.js": `function App() {
-  return <h1>Hello Ciph erStudio! 🎉</h1>;
+  return <h1>Hello CipherStudio! 🎉</h1>;
 }
 export default App;`,
       "/index.js": `import ReactDOM from 'react-dom/client';

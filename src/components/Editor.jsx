@@ -1,7 +1,6 @@
 import { SandpackLayout, SandpackCodeEditor, SandpackPreview, useSandpack } from "@codesandbox/sandpack-react";
 import { useEffect, useRef, useCallback } from "react";
 import { debounce } from "lodash";
-
 export default function Editor({ onFilesChange }) {
   const { sandpack } = useSandpack();
   const prevFilesRef = useRef(sandpack.files);
@@ -36,17 +35,12 @@ export default function Editor({ onFilesChange }) {
           showInlineErrors
           wrapContent
           closableTabs
-          style={{
-            minHeight: '100%',
-            maxHeight: '100%',
-            overflow: 'auto',
-          }}
+          className="sandpack-code-editor"
+          
         />
-        <SandpackPreview style={{
-          minHeight: '100%',
-          maxHeight: '100%',
-          overflow: 'auto',
-        }} />
+        <SandpackPreview 
+          className="sandpack-preview"
+        />
       </SandpackLayout>
     </div>
   );
