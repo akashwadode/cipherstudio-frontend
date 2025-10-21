@@ -1,19 +1,43 @@
-/* Keep these existing */
+/* App Container */
 .app-container {
   display: flex;
   height: 100vh;
   font-family: Arial, sans-serif;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
+/* Theme Styles */
+.app-container.dark {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.app-container.light {
+  background: #f5f5f5;
+  color: #000;
+}
+
+/* File Explorer */
 .file-explorer {
   width: 250px;
-  background: #1e1e1e;
-  border-right: 1px solid #333;
   height: 100vh;
+  border-right: 1px solid;
   overflow-y: auto;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
+.app-container.dark .file-explorer {
+  background: #1e1e1e;
+  border-right-color: #333;
+}
+
+.app-container.light .file-explorer {
+  background: #e0e0e0;
+  border-right-color: #ccc;
+}
+
+/* Main Content */
 .main-content {
   flex: 1;
   display: flex;
@@ -21,61 +45,96 @@
   height: 100vh;
 }
 
-/* Toolbar at the top */
+/* Toolbar at the Top */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f5f5f5;
-  border-bottom: 1px solid #ddd;
   padding: 10px 20px;
+  border-bottom: 1px solid;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark .topbar {
+  background: #2a2a2a;
+  border-bottom-color: #444;
+}
+
+.app-container.light .topbar {
+  background: #fff;
+  border-bottom-color: #ddd;
 }
 
 .topbar h1 {
   margin: 0;
   font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark .topbar h1 {
+  color: #fff;
+}
+
+.app-container.light .topbar h1 {
+  color: #000;
 }
 
 /* Buttons */
 .controls button {
   padding: 8px 14px;
   margin-right: 10px;
-  background: #007bff;
   border: none;
-  color: white;
   border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app-container.dark .controls button {
+  background: #007bff;
+  color: white;
+}
+
+.app-container.light .controls button {
+  background: #0056b3;
+  color: white;
 }
 
 .controls button:hover {
-  background: #0056b3;
+  background: #004085;
 }
 
+/* Project ID */
 .project-id {
   margin-left: 10px;
-  color: #666;
   font-size: 12px;
+  transition: color 0.3s ease;
 }
 
-/* ✅ Editor fix starts here */
-/* --- EDITOR + PREVIEW LAYOUT --- */
+.app-container.dark .project-id {
+  color: #aaa;
+}
+
+.app-container.light .project-id {
+  color: #666;
+}
+
+/* Editor + Preview Layout */
 .editor-container {
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px); /* below topbar */
+  height: calc(100vh - 60px); /* Below topbar */
 }
 
 .sandpack-layout {
   flex: 1;
   display: flex;
-  flex-direction: row; /* ✅ Side by side */
+  flex-direction: row;
   height: 100%;
 }
 
-/* Make both code editor and preview share width equally */
 .sandpack-layout > * {
   flex: 1;
-  min-width: 0; /* prevents overflow */
+  min-width: 0;
   min-height: 0;
 }

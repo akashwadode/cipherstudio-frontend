@@ -19,7 +19,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);`,
     },
   });
-
   const [projectId, setProjectId] = useState(() => {
     const savedId = localStorage.getItem("currentProjectId");
     if (savedId) return savedId;
@@ -27,6 +26,7 @@ root.render(<App />);`,
     localStorage.setItem("currentProjectId", newId);
     return newId;
   });
+  const [theme, setTheme] = useState("dark"); // 🔥 Theme state
 
   const handleSandpackChange = (newFiles) => {
     setFiles((prev) => ({
@@ -61,32 +61,31 @@ root.render(<App />);`,
     }
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
     <SandpackProvider
       template="react"
       files={files.content}
       activeFile={files.active}
       customSetup={{ entry: "/index.js" }}
+      theme={theme} // 🔥 Pass theme to Sandpack
       onChange={handleSandpackChange}
     >
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden", fontFamily: "Arial" }}>
-        <FileExplorer files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} />
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{
-            padding: "15px",
-            background: "#f5f5f5",
-            borderBottom: "1px solid #ddd",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}>
-            <h1 style={{ margin: 0 }}>🧩 CipherStudio</h1>
-            <div>
-              <button onClick={handleSave} style={{ marginRight: "10px", padding: "8px 16px" }}>💾 Save</button>
-              <button onClick={handleLoad} style={{ padding: "8px 16px" }}>📂 Load</button>
-              <span style={{ marginLeft: "20px", color: "#666", fontSize: "12px" }}>
-                ID: {projectId.slice(-8)}
-              </span>
+      <div className={`app-container ${theme}`}>
+        <FileExplorer files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} theme={theme} />
+        <div className="main-content">
+          <div className="topbar">
+            <h1>🧩 CipherStudio</h1>
+            <div className="controls">
+              <button onClick={handleSave}>💾 Save</button>
+              <button onClick={handleLoad}>📂 Load</button>
+              <button onClick={toggleTheme}>
+                {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+              </button>
+              <span className="project-id">ID: {projectId.slice(-8)}</span>
             </div>
           </div>
           <Editor files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} />
