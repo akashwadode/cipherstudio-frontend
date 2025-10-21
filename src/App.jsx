@@ -3,6 +3,7 @@ import { SandpackProvider } from "@codesandbox/sandpack-react";
 import Editor from "./components/Editor";
 import FileExplorer from "./components/FileExplorer";
 import { saveProject, loadProject, generateId } from "./services/api";
+
 import "./components/App.css";
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
     active: "/App.js",
     content: {
       "/App.js": `function App() {
-  return <h1>Hello CipherStudio! 🎉</h1>;
+  return <h1>Hello Ciph erStudio! 🎉</h1>;
 }
 export default App;`,
       "/index.js": `import ReactDOM from 'react-dom/client';
@@ -19,6 +20,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);`,
     },
   });
+
   const [projectId, setProjectId] = useState(() => {
     const savedId = localStorage.getItem("currentProjectId");
     if (savedId) return savedId;
@@ -26,7 +28,8 @@ root.render(<App />);`,
     localStorage.setItem("currentProjectId", newId);
     return newId;
   });
-  const [theme, setTheme] = useState("dark"); // 🔥 Theme state
+
+  const [theme, setTheme] = useState("dark");
 
   const handleSandpackChange = (newFiles) => {
     setFiles((prev) => ({
@@ -71,24 +74,36 @@ root.render(<App />);`,
       files={files.content}
       activeFile={files.active}
       customSetup={{ entry: "/index.js" }}
-      theme={theme} // 🔥 Pass theme to Sandpack
+      theme={theme}
       onChange={handleSandpackChange}
     >
       <div className={`app-container ${theme}`}>
-        <FileExplorer files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} theme={theme} />
-        <div className="main-content">
-          <div className="topbar">
-            <h1>🧩 CipherStudio</h1>
-            <div className="controls">
-              <button onClick={handleSave}>💾 Save</button>
-              <button onClick={handleLoad}>📂 Load</button>
-              <button onClick={toggleTheme}>
-                {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
-              </button>
-              <span className="project-id">ID: {projectId.slice(-8)}</span>
-            </div>
+        {/* Topbar */}
+        <div className="topbar">
+          <h1>🧩 CipherStudio</h1>
+          <div className="controls">
+            <button onClick={handleSave}>💾 Save</button>
+            <button onClick={handleLoad}>📂 Load</button>
+            <button onClick={toggleTheme}>
+              {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+            </button>
+            <span className="project-id">ID: {projectId.slice(-8)}</span>
           </div>
-          <Editor files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} />
+        </div>
+
+        {/* Workspace: File Explorer Left, Editor Right */}
+        <div className="workspace">
+          <FileExplorer
+            files={files.content}
+            activeFile={files.active}
+            onFilesChange={handleSandpackChange}
+            theme={theme}
+          />
+          <Editor
+            files={files.content}
+            activeFile={files.active}
+            onFilesChange={handleSandpackChange}
+          />
         </div>
       </div>
     </SandpackProvider>

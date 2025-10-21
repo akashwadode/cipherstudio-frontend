@@ -1,30 +1,52 @@
-import {
-  SandpackLayout,
-  SandpackCodeEditor,
-  SandpackPreview,
-  useSandpack
-} from "@codesandbox/sandpack-react";
-import { useEffect, useRef } from "react";
+import { SandpackLayout, SandpackCodeEditor, SandpackPreview, useSandpack } from "@codesandbox/sandpack-react";
+import { useEffect, useRef, useCallback } from "react";
+import { debounce } from "lodash";
 
 export default function Editor({ onFilesChange }) {
   const { sandpack } = useSandpack();
   const prevFilesRef = useRef(sandpack.files);
 
-  useEffect(() => {
-    const current = JSON.stringify(sandpack.files);
-    const prev = JSON.stringify(prevFilesRef.current);
+  const debouncedOnChange = useCallback(
+    debounce((files) => {
+      prevFilesRef.current = files;
+      onFilesChange?.(files);
+    }, 1300),
+    [onFilesChange]
+  );
 
-    if (current !== prev) {
-      prevFilesRef.current = sandpack.files;
-      onFilesChange?.(sandpack.files);
+  useEffect(() => {
+    const currentFiles = sandpack.files;
+    let hasChanged = false;
+    for (let key in currentFiles) {
+      if (!prevFilesRef.current[key] || prevFilesRef.current[key].code !== currentFiles[key].code) {
+        hasChanged = true;
+        break;
+      }
     }
-  }, [sandpack.files, onFilesChange]);
+    if (hasChanged) {
+      debouncedOnChange(currentFiles);
+    }
+  }, [sandpack.files, debouncedOnChange]);
 
   return (
-    <div className="editor-container">
-      <SandpackLayout className="sandpack-layout">
-        <SandpackCodeEditor showLineNumbers showInlineErrors />
-        <SandpackPreview />
+    <div className="editor-wrapper">
+      <SandpackLayout className="editor-sandpack">
+        <SandpackCodeEditor
+          showLineNumbers
+          showInlineErrors
+          wrapContent
+          closableTabs
+          style={{
+            minHeight: '100%',
+            maxHeight: '100%',
+            overflow: 'auto',
+          }}
+        />
+        <SandpackPreview style={{
+          minHeight: '100%',
+          maxHeight: '100%',
+          overflow: 'auto',
+        }} />
       </SandpackLayout>
     </div>
   );
