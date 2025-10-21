@@ -16,8 +16,8 @@ export default App;`,
       "/index.js": `import ReactDOM from 'react-dom/client';
 import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);`
-    }
+root.render(<App />);`,
+    },
   });
 
   const [projectId, setProjectId] = useState(() => {
@@ -29,27 +29,36 @@ root.render(<App />);`
   });
 
   const handleSandpackChange = (newFiles) => {
-    console.log("Files changed:", newFiles);
-    setFiles(prev => ({
-      ...prev,
-      content: newFiles
+    setFiles((prev) => ({
+      active: prev.active,
+      content: newFiles,
     }));
   };
 
-  const handleSave = () => {
-    localStorage.setItem("currentProjectId", projectId);
-    const result = saveProject(projectId, files.content);
-    alert(`✅ Saved as: ${result.projectId}`);
+  const handleSave = async () => {
+    try {
+      localStorage.setItem("currentProjectId", projectId);
+      const result = await saveProject(projectId, files.content);
+      alert(`✅ Saved as: ${result.project.projectId}`);
+    } catch (error) {
+      alert("❌ Save Failed!");
+      console.error(error);
+    }
   };
 
-  const handleLoad = () => {
-    const keys = Object.keys(localStorage).filter(k => k.startsWith("project_"));
-    if (keys.length === 0) return alert("❌ No project found!");
-    const firstProjectId = keys[0].replace("project_", "");
-    const loaded = loadProject(firstProjectId);
-    setProjectId(firstProjectId);
-    setFiles({ active: Object.keys(loaded)[0], content: loaded });
-    alert(`✅ Loaded project ID: ${firstProjectId}`);
+  const handleLoad = async () => {
+    try {
+      const loaded = await loadProject(projectId);
+      if (loaded) {
+        setFiles({ active: Object.keys(loaded)[0], content: loaded });
+        alert(`✅ Loaded project ID: ${projectId}`);
+      } else {
+        alert("❌ No project found!");
+      }
+    } catch (error) {
+      alert("❌ Load Failed!");
+      console.error(error);
+    }
   };
 
   return (
@@ -60,18 +69,27 @@ root.render(<App />);`
       customSetup={{ entry: "/index.js" }}
       onChange={handleSandpackChange}
     >
-      <div className="app-container">
-        <FileExplorer />
-        <div className="main-content">
-          <div className="topbar">
-            <h1>🧩 CipherStudio</h1>
-            <div className="controls">
-              <button onClick={handleSave}>💾 Save</button>
-              <button onClick={handleLoad}>📂 Load</button>
-              <span className="project-id">ID: {projectId.slice(-8)}</span>
+      <div style={{ display: "flex", height: "100vh", overflow: "hidden", fontFamily: "Arial" }}>
+        <FileExplorer files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} />
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{
+            padding: "15px",
+            background: "#f5f5f5",
+            borderBottom: "1px solid #ddd",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
+            <h1 style={{ margin: 0 }}>🧩 CipherStudio</h1>
+            <div>
+              <button onClick={handleSave} style={{ marginRight: "10px", padding: "8px 16px" }}>💾 Save</button>
+              <button onClick={handleLoad} style={{ padding: "8px 16px" }}>📂 Load</button>
+              <span style={{ marginLeft: "20px", color: "#666", fontSize: "12px" }}>
+                ID: {projectId.slice(-8)}
+              </span>
             </div>
           </div>
-          <Editor onFilesChange={handleSandpackChange} />
+          <Editor files={files.content} activeFile={files.active} onFilesChange={handleSandpackChange} />
         </div>
       </div>
     </SandpackProvider>

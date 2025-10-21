@@ -1,12 +1,25 @@
-// Simple localStorage "API" (backend later!)
-export const saveProject = (projectId, files) => {
-  localStorage.setItem(`project_${projectId}`, JSON.stringify(files));
-  return { success: true, projectId };
+import axios from 'axios';
+
+const API_URL = 'http://localhost:5000/api/projects';
+
+export const saveProject = async (projectId, files) => {
+  try {
+    const response = await axios.post(API_URL, { projectId, files });
+    return response.data;
+  } catch (error) {
+    console.error('❌ Save Error:', error);
+    throw error;
+  }
 };
 
-export const loadProject = (projectId) => {
-  const data = localStorage.getItem(`project_${projectId}`);
-  return data ? JSON.parse(data) : null;
+export const loadProject = async (projectId) => {
+  try {
+    const response = await axios.get(`${API_URL}/${projectId}`);
+    return response.data ? response.data.files : null;
+  } catch (error) {
+    console.error('❌ Load Error:', error);
+    return null;
+  }
 };
 
 export const generateId = () => {
