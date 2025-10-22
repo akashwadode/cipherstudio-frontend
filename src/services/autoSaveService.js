@@ -1,10 +1,8 @@
-// autosaveService.js
 let timeoutId = null;
 
 export const startAutoSave = (sandpack, projectId, delay = 5000) => {
   if (!sandpack) return;
 
-  // Listen for file changes in Sandpack
   const unsubscribe = sandpack.listen((message) => {
     if (message.type === "update" || message.type === "fileChange") {
       clearTimeout(timeoutId);
@@ -16,10 +14,9 @@ export const startAutoSave = (sandpack, projectId, delay = 5000) => {
     }
   });
 
-  return unsubscribe; // you can call this to stop listening
+  return unsubscribe; 
 };
 
-// Optional: Load project from localStorage
 export const loadFromLocalStorage = (projectId, sandpack) => {
   const savedProject = localStorage.getItem(projectId);
   if (savedProject) {

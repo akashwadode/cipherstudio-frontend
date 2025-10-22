@@ -12,7 +12,7 @@ export default function Editor({ onFilesChange }) {
     }, 1300),
     [onFilesChange]
   );
-
+  
   useEffect(() => {
     const currentFiles = sandpack.files;
     let hasChanged = false;

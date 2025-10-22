@@ -8,11 +8,120 @@
   transition: background 0.3s ease;
 }
 
-/* Workspace: File Explorer Left, Editor Right */
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  height: 60px;
+  border-bottom: 1px solid;
+  background: linear-gradient(to right, #2a2a2a, #3a3a3a);
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.light .navbar {
+  background: linear-gradient(to right, #fff, #f5f5f5);
+  border-bottom-color: #ddd;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.navbar-brand .logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.app-container.dark .navbar-brand {
+  color: #fff;
+}
+
+.app-container.light .navbar-brand {
+  color: #333;
+}
+
+.navbar-project {
+  flex: 1;
+  margin: 0 20px;
+}
+
+.project-name {
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.project-name:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.project-name-input {
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  color: inherit;
+  width: 200px;
+}
+
+.app-container.dark .project-name {
+  color: #ddd;
+}
+
+.app-container.light .project-name {
+  color: #444;
+}
+
+.navbar-controls button {
+  padding: 8px 14px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.app-container.dark .navbar-controls button {
+  background: #007bff;
+  color: white;
+}
+
+.app-container.light .navbar-controls button {
+  background: #0056b3;
+  color: white;
+}
+
+.navbar-controls button:hover {
+  background: #004085;
+}
+
+.project-id {
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+.app-container.dark .project-id {
+  color: #aaa;
+}
+
+.app-container.light .project-id {
+  color: #666;
+}
+
+/* Workspace */
 .workspace {
   display: flex;
   flex: 1;
-  height: calc(100vh - 60px); /* full height minus topbar */
+  height: calc(100vh - 60px);
   overflow: hidden;
 }
 
@@ -34,7 +143,7 @@
   border-right-color: #ccc;
 }
 
-/* Main Content (Editor) */
+/* Editor */
 .editor-wrapper {
   flex: 1;
   display: flex;
@@ -45,82 +154,6 @@
   flex: 1;
   display: flex;
   flex-direction: row;
-  height: 100%;
-}
-
-/* Toolbar at the Top */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  height: 60px;
-  border-bottom: 1px solid;
-  flex-shrink: 0;
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-
-.app-container.dark .topbar {
-  background: #2a2a2a;
-  border-bottom-color: #444;
-}
-
-.app-container.light .topbar {
-  background: #fff;
-  border-bottom-color: #ddd;
-}
-
-.topbar h1 {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
-.controls button {
-  padding: 8px 14px;
-  margin-right: 10px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-.app-container.dark .controls button {
-  background: #007bff;
-  color: white;
-}
-
-.app-container.light .controls button {
-  background: #0056b3;
-  color: white;
-}
-
-.controls button:hover {
-  background: #004085;
-}
-
-.project-id {
-  margin-left: 10px;
-  font-size: 12px;
-}
-
-.app-container.dark .project-id {
-  color: #aaa;
-}
-
-.app-container.light .project-id {
-  color: #666;
-}
-
-/* Editor */
-.editor-wrapper {
-  height: 100%;
-  display: flex;
-}
-
-.editor-sandpack {
-  display: flex;
-  flex: 1;
-  flex-direction: row; /* side by side by default */
   height: 100%;
   overflow: hidden;
 }
@@ -139,22 +172,22 @@
   overflow: auto;
 }
 
-/* Responsive for tablets: stack editor above preview */
+/* Responsive for tablets */
 @media (max-width: 1024px) {
   .editor-sandpack {
-    flex-direction: column; /* stack vertically */
+    flex-direction: column;
   }
 
   .sandpack-code-editor,
   .sandpack-preview {
-    flex: 1;          /* split height equally */
-    min-height: 0;    /* allow shrinking */
-    max-height: 50%;  /* optional cap */
+    flex: 1;
+    min-height: 0;
+    max-height: 50%;
   }
 }
 
 .autosave-bubble {
-  position: fixed; /* stay on top-right even when scrolling */
+  position: fixed;
   top: 10px;
   right: 10px;
   background: #4caf50;
@@ -165,7 +198,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   animation: fadeInOut 1.2s ease forwards;
   z-index: 1000;
-  pointer-events: none; /* doesn't block clicks */
+  pointer-events: none;
 }
 
 @keyframes fadeInOut {
